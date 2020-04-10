@@ -12,9 +12,13 @@ P2P_PORT=9069
 ADDRESS_VERSION=63
 RPC_PORT=9370
 # RPC_CHECK=defer.inlineCallbacks(lambda bitcoind: defer.returnValue('virclesaddress' in (yield bitcoind.rpc_help()) and not (yield bitcoind.rpc_getinfo())['testnet']))
+# RPC_CHECK = defer.inlineCallbacks(lambda bitcoind: defer.returnValue(
+#             (yield helper.check_genesis_block(bitcoind, '0000066e6810ff0642cc34fe5fc3c66c3f39c9a0c713c079df427524994fc06a')) and
+#             not (yield bitcoind.rpc_getinfo())['testnet']
+#         ))
 RPC_CHECK = defer.inlineCallbacks(lambda bitcoind: defer.returnValue(
             (yield helper.check_genesis_block(bitcoind, '0000066e6810ff0642cc34fe5fc3c66c3f39c9a0c713c079df427524994fc06a')) and
-            not (yield bitcoind.rpc_getinfo())['testnet']
+            (yield bitcoind.rpc_getblockchaininfo())['chain'] != 'test'
         ))
 SUBSIDY_FUNC = lambda height: 66.6*100000000 >> (height + 1)//525600
 POW_FUNC=lambda data: pack.IntType(256).unpack(__import__('ltc_scrypt').getPoWHash(data))
