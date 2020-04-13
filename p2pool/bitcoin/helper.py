@@ -64,9 +64,11 @@ def getwork(bitcoind, use_getblocktemplate=False):
         work['height'] = (yield bitcoind.rpc_getblock(work['previousblockhash']))['height'] + 1
     elif p2pool.DEBUG:
         assert work['height'] == (yield bitcoind.rpc_getblock(work['previousblockhash']))['height'] + 1
+
     defer.returnValue(dict(
         version=work['version'],
-        previous_block=int(work['previousblockhash'], 16),
+        previous_block=int(work['previousblockhash'], 16),    
+        # previous_block=work['previousblockhash'], # modify by luke
         transactions=map(bitcoin_data.tx_type.unpack, packed_transactions),
         transaction_hashes=map(bitcoin_data.hash256, packed_transactions),
         transaction_fees=[x.get('fee', None) if isinstance(x, dict) else None for x in work['transactions']],

@@ -110,7 +110,7 @@ def main(args, net, datadir_path, merged_urls, worker_endpoint):
         deferral.RobustLoopingCall(poll_warnings).start(20*60)
         
         print '    ...success!'
-        print '    Current block hash: %x' % (temp_work['previous_block'],)
+        print '    Current block hash: %064x' % (temp_work['previous_block'],)  # modify '%x' to '%064x' by luke
         print '    Current block height: %i' % (temp_work['height'] - 1,)
         print
         
@@ -186,7 +186,6 @@ def main(args, net, datadir_path, merged_urls, worker_endpoint):
         
         node = p2pool_node.Node(factory, bitcoind, shares.values(), known_verified, net)
         yield node.start()
-        
         for share_hash in shares:
             if share_hash not in node.tracker.items:
                 ss.forget_share(share_hash)

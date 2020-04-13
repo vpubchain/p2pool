@@ -95,7 +95,7 @@ def get_height_rel_highest_func(bitcoind, factory, best_block_func, net):
         @defer.inlineCallbacks
         def height_cacher(block_hash):
             try:
-                x = yield bitcoind.rpc_getblock('%x' % (block_hash,))
+                x = yield bitcoind.rpc_getblock('%064x' % (block_hash,))    # modify '%x' to '%064x' by luke
             except jsonrpc.Error_for_code(-5): # Block not found
                 if not p2pool.DEBUG:
                     raise deferral.RetrySilentlyException()

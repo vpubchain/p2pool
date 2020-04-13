@@ -179,7 +179,6 @@ class Node(object):
         self.stop = stop_signal.happened
         
         # BITCOIND WORK
-        
         self.bitcoind_work = variable.Variable((yield helper.getwork(self.bitcoind)))
         @defer.inlineCallbacks
         def work_poller():
@@ -193,7 +192,6 @@ class Node(object):
         work_poller()
         
         # PEER WORK
-        
         self.best_block_header = variable.Variable(None)
         def handle_header(new_header, valid=False):
             new_hash = self.net.PARENT.POW_FUNC(bitcoin_data.block_header_type.pack(new_header))
@@ -226,11 +224,9 @@ class Node(object):
         yield deferral.retry('Error while requesting best block header:')(poll_header)()
         
         # BEST SHARE
-        
         self.known_txs_var = variable.Variable({}) # hash -> tx
         self.mining_txs_var = variable.Variable({}) # hash -> tx
         self.get_height_rel_highest = yield height_tracker.get_height_rel_highest_func(self.bitcoind, self.factory, lambda: self.bitcoind_work.value['previous_block'], self.net)
-        
         self.best_share_var = variable.Variable(None)
         self.desired_var = variable.Variable(None)
         self.bitcoind_work.changed.watch(lambda _: self.set_best_share())
